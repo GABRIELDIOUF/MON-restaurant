@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>La Table de Gabriel — Restaurant</title>
+  <meta name="description" content="Restaurant gastronomique — menus de saison, réservation en ligne, livraison et événements privés." />
+  <meta property="og:title" content="La Table de Gabriel — Restaurant" />
+  <meta property="og:description" content="Cuisine de saison, produits locaux. Réservez votre table en quelques clics." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1200&auto=format&fit=crop" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0b0d;--card:#101216;--muted:#161922;--text:#e8e9ee;--sub:#b5b8c6;--brand:#ffb703;--brand-2:#fb8500;--accent:#8ecae6;--ok:#06d6a0;--danger:#ef476f;
+      --radius:18px;--shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;background:radial-gradient(1200px 600px at 80% -10%, #1a2030 0%, #0b0b0d 60%), var(--bg);
+      color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.6;
+    }
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    .container{width:min(1120px,92vw);margin-inline:auto}
+
+    /* Header */
+    header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(8px);background:rgba(11,11,13,.6);border-bottom:1px solid rgba(255,255,255,.06)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;gap:10px;align-items:center;font-weight:800;letter-spacing:.3px}
+    .brand .logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center;color:#111;box-shadow:var(--shadow)}
+    .nav a.btn{padding:10px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.12)}
+    .nav a.btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#111;border:none;font-weight:700}
+    .navlinks{display:flex;gap:20px;align-items:center}
+    .burger{display:none;cursor:pointer;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:8px}
+
+    /* Mobile menu */
+    .mobile{display:none;position:absolute;inset:58px 0 auto 0;background:rgba(11,11,13,.97);border-bottom:1px solid rgba(255,255,255,.06)}
+    .mobile a{display:block;padding:14px 20px;border-top:1px solid rgba(255,255,255,.06)}
+
+    /* Hero */
+    .hero{position:relative;padding:96px 0 72px;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat;opacity:.28;filter:grayscale(12%) contrast(110%)}
+    .hero .inner{position:relative}
+    .kicker{display:inline-block;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);font-size:12px;letter-spacing:.2px}
+    h1{font-size:clamp(34px,6vw,64px);line-height:1.05;margin:18px 0 14px}
+    .lead{font-size:clamp(16px,2.6vw,20px);color:var(--sub);max-width:60ch}
+    .cta{margin-top:26px;display:flex;gap:12px;flex-wrap:wrap}
+    .cta .btn{padding:14px 20px;border-radius:16px;border:1px solid rgba(255,255,255,.12);font-weight:700}
+    .cta .primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#111;border:none}
+
+    /* Sections */
+    section{padding:64px 0}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);box-shadow:var(--shadow)}
+
+    /* À propos */
+    .about{display:grid;grid-template-columns:1.2fr .8fr;gap:28px}
+    .about .photo{border-radius:var(--radius);overflow:hidden}
+
+    /* Menu */
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+    .tab{padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);cursor:pointer}
+    .tab[aria-selected="true"]{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#111;border:none;font-weight:700}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .dish{padding:16px}
+    .dish header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;position:relative}
+    .dish h3{margin:0;font-size:18px}
+    .price{font-weight:800;color:var(--accent)}
+    .tag{font-size:12px;padding:4px 8px;border:1px solid rgba(255,255,255,.12);border-radius:999px;color:var(--sub)}
+    .dish p{margin:8px 0 0;color:var(--sub);min-height:44px}
+
+    /* Gallery */
+    .gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .gallery a{border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+
+    /* Réservation */
+    .form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .form .field{display:flex;flex-direction:column;gap:6px}
+    .form input,.form select,.form textarea{
+      background:#0e1015;color:var(--text);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 14px;outline:none
+    }
+    .form .full{grid-column:1/-1}
+    .inline-note{font-size:12px;color:var(--sub)}
+
+    /* Contact */
+    .contact{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .contact .map{min-height:320px;border-radius:var(--radius);overflow:hidden}
+
+    /* Footer */
+    footer{padding:40px 0 60px;color:#aeb2c2;border-top:1px solid rgba(255,255,255,.08)}
+    .footgrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:24px}
+    .credits{margin-top:14px;font-size:12px;color:#8990a3}
+
+    /* Utilities */
+    .section-title{font-size:28px;margin:0 0 16px}
+    .muted{color:var(--sub)}
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#0e1015;border:1px solid rgba(255,255,255,.12)}
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .about{grid-template-columns:1fr}
+      .grid{grid-template-columns:1fr 1fr}
+      .gallery{grid-template-columns:repeat(3,1fr)}
+      .contact{grid-template-columns:1fr}
+      .footgrid{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width: 720px){
+      .navlinks{display:none}
+      .burger{display:block}
+      .mobile{display:none}
+      .grid{grid-template-columns:1fr}
+      .gallery{grid-template-columns:repeat(2,1fr)}
+      .footgrid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav" role="navigation" aria-label="Navigation principale">
+      <a class="brand" href="#accueil" aria-label="Aller à l'accueil">
+        <span class="logo" aria-hidden="true">🍽️</span>
+        <span>La Table de Gabriel</span>
+      </a>
+      <nav class="navlinks" aria-label="Liens">
+        <a href="#a-propos">À propos</a>
+        <a href="#menu">Menu</a>
+        <a href="#galerie">Galerie</a>
+        <a href="#reservation" class="btn">Réservation</a>
+        <a href="#contact" class="btn primary">Nous contacter</a>
+      </nav>
+      <button class="burger" aria-label="Ouvrir le menu" id="burger" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="mobile" id="mobile">
+      <a href="#a-propos">À propos</a>
+      <a href="#menu">Menu</a>
+      <a href="#galerie">Galerie</a>
+      <a href="#reservation">Réservation</a>
+      <a href="#contact">Nous contacter</a>
+    </div>
+  </header>
+
+  <main id="accueil">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container inner">
+        <span class="kicker">Cuisine de saison • Produits locaux</span>
+        <h1>Une expérience culinaire <span style="background:linear-gradient(135deg,var(--brand),var(--brand-2));-webkit-background-clip:text;background-clip:text;color:transparent">authentique</span> à Dakar</h1>
+        <p class="lead">Menu dégustation, grillades au feu de bois, options végé et sans gluten. Ouvert du mardi au dimanche — service midi & soir.</p>
+        <div class="cta">
+          <a class="btn primary" href="#reservation">Réserver une table</a>
+          <a class="btn" href="#menu">Voir le menu</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- A PROPOS -->
+    <section class="container" id="a-propos">
+      <div class="about">
+        <article class="card" style="padding:22px">
+          <h2 class="section-title">À propos</h2>
+          <p class="muted">À la Table de Gabriel, nous célébrons le terroir sénégalais et africain. Notre chef revisite les classiques avec des produits de pêche locale et de petits producteurs.</p>
+          <ul>
+            <li>✅ Carte courte, fraîche et de saison</li>
+            <li>✅ Options végétariennes et sans gluten</li>
+            <li>✅ Événements privés jusqu'à 40 couverts</li>
+          </ul>
+          <div class="badge" aria-label="Michelin Guide">
+            ⭐ Recommandé 2025 — Guide Local
+          </div>
+        </article>
+        <aside class="photo card">
+          <img alt="Salle chaleureuse du restaurant" src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=1600&auto=format&fit=crop" />
+        </aside>
+      </div>
+    </section>
+
+    <!-- MENU -->
+    <section class="container" id="menu">
+      <h2 class="section-title">Menu</h2>
+      <div class="tabs" role="tablist" aria-label="Catégories du menu">
+        <button class="tab" role="tab" aria-selected="true" data-cat="plats">Plats</button>
+        <button class="tab" role="tab" aria-selected="false" data-cat="entrees">Entrées</button>
+        <button class="tab" role="tab" aria-selected="false" data-cat="desserts">Desserts</button>
+        <button class="tab" role="tab" aria-selected="false" data-cat="boissons">Boissons</button>
+      </div>
+      <div class="grid" id="menuGrid" aria-live="polite"></div>
+      <p class="inline-note">Prix TTC — Allergènes : nous consulter. *Photos non contractuelles.</p>
+    </section>
+
+    <!-- GALERIE -->
+    <section class="container" id="galerie">
+      <h2 class="section-title">Galerie</h2>
+      <div class="gallery" id="gallery">
+        <a href="https://images.unsplash.com/photo-1514517220033-e1eea3b9f32d?q=80&w=1600&auto=format&fit=crop" target="_blank" rel="noopener" class="card"><img alt="Plat signature" src="https://images.unsplash.com/photo-1514517220033-e1eea3b9f32d?q=80&w=800&auto=format&fit=crop"></a>
+        <a href="https://images.unsplash.com/photo-1523986371872-9d3ba2e2a389?q=80&w=1600&auto=format&fit=crop" target="_blank" rel="noopener" class="card"><img alt="Entrée colorée" src="https://images.unsplash.com/photo-1523986371872-9d3ba2e2a389?q=80&w=800&auto=format&fit=crop"></a>
+        <a href="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?q=80&w=1600&auto=format&fit=crop" target="_blank" rel="noopener" class="card"><img alt="Dessert" src="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?q=80&w=800&auto=format&fit=crop"></a>
+        <a href="https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop" target="_blank" rel="noopener" class="card"><img alt="Boisson" src="https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=800&auto=format&fit=crop"></a>
+      </div>
+    </section>
+
+    <!-- RÉSERVATION -->
+    <section class="container" id="reservation">
+      <h2 class="section-title">Réservation</h2>
+      <form class="card form" id="booking" style="padding:18px" novalidate>
+        <div class="field">
+          <label for="date">Date</label>
+          <input id="date" name="date" type="date" required />
+        </div>
+        <div class="field">
+          <label for="time">Heure</label>
+          <input id="time" name="time" type="time" required />
+        </div>
+        <div class="field">
+          <label for="guests">Couverts</label>
+          <select id="guests" name="guests" required>
+            <option value="">Choisir…</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="name">Nom complet</label>
+          <input id="name" name="name" type="text" placeholder="Votre nom" required />
+        </div>
+        <div class="field full">
+          <label for="phone">Téléphone</label>
+          <input id="phone" name="phone" type="tel" placeholder="+221…" required />
+        </div>
+        <div class="field full">
+          <label for="notes">Message (optionnel)</label>
+          <textarea id="notes" name="notes" rows="3" placeholder="Allergies, occasion spéciale…"></textarea>
+        </div>
+        <div class="field full">
+          <button class="btn primary" type="submit" style="padding:14px 18px;border-radius:14px;border:none">Confirmer la demande</button>
+          <p class="inline-note">Vous recevrez une confirmation par SMS sous 30 minutes (simulation).</p>
+        </div>
+      </form>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="container" id="contact">
+      <h2 class="section-title">Contact & Accès</h2>
+      <div class="contact">
+        <div class="card" style="padding:18px">
+          <p><strong>Adresse :</strong> 12 Rue des Saveurs, Dakar Plateau</p>
+          <p><strong>Horaires :</strong> Mar–Dim 12:00–15:00 • 19:00–23:00</p>
+          <p><strong>Téléphone :</strong> <a href="tel:+221000000000">+221 00 000 00 00</a></p>
+          <p><strong>Email :</strong> <a href="mailto:contact@latabledegabriel.sn">contact@latabledegabriel.sn</a></p>
+          <div class="badge" style="margin-top:8px">🚗 Livraison disponible</div>
+        </div>
+        <div class="map card">
+          <!-- Carte embarquée (remplacer par votre iframe Google Maps si besoin) -->
+          <img alt="Carte d'accès" src="https://images.unsplash.com/photo-1529927066849-6c383b31b9a5?q=80&w=1600&auto=format&fit=crop" style="height:100%;width:100%;object-fit:cover"/>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footgrid">
+        <div>
+          <div class="brand"><span class="logo">🍽️</span><span>La Table de Gabriel</span></div>
+          <p class="credits">© <span id="year"></span> La Table de Gabriel — Tous droits réservés.</p>
+        </div>
+        <div>
+          <h4>Liens</h4>
+          <ul style="list-style:none;padding:0;margin:0">
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#reservation">Réservation</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Suivez-nous</h4>
+          <ul style="list-style:none;padding:0;margin:0">
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">Facebook</a></li>
+            <li><a href="#">TikTok</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Données du menu (modifiable facilement)
+    const MENU = {
+      plats:[
+        {name:'Thiéboudienne revisité', price:8500, tag:'Signature', desc:'Riz au poisson, légumes rôtis, émulsion citronnelle.'},
+        {name:'Poulet Yassa grillé', price:6900, tag:'Classique', desc:'Oignons confits, citron, pickles maison.'},
+        {name:'Dibi d’agneau', price:9800, tag:'Grillades', desc:'Épices maison, attiéké parfumé.'},
+        {name:'Filet de dorade', price:9200, tag:'Pêche locale', desc:'Beurre de bissap, fenouil rôti.'},
+        {name:'Penne végétariennes', price:6400, tag:'Végé', desc:'Crème légère au nkonkoni, tomates confites.'},
+        {name:'Burger du marché', price:7000, tag:'Street', desc:'Pain brioché, cheddar, sauce maison.'},
+      ],
+      entrees:[
+        {name:'Accras de morue', price:4200, tag:'À partager', desc:'Sauce tamarin relevée.'},
+        {name:'Salade de mangue', price:3800, tag:'Frais', desc:'Herbes, cacahuète grillée, vinaigrette citron vert.'},
+        {name:'Tartare de thon', price:5200, tag:'Pêche', desc:'Sésame, huile de sésame fumée.'},
+      ],
+      desserts:[
+        {name:'Pastel à la goyave', price:3000, tag:'Maison', desc:'Glace vanille artisanale.'},
+        {name:'Tiramisu au café Touba', price:3400, tag:'Café', desc:'Mascarpone onctueux.'},
+        {name:'Fondant chocolat', price:3200, tag:'Gourmand', desc:'Cœur coulant 70%.'},
+      ],
+      boissons:[
+        {name:'Bissap', price:1500, tag:'Frais', desc:'Infusion d’hibiscus maison.'},
+        {name:'Gingembre', price:1500, tag:'Frais', desc:'Citron, pointe de miel.'},
+        {name:'Mocktail du jour', price:2600, tag:'Création', desc:'Selon l’inspiration du bar.'},
+      ]
+    };
+
+    const grid = document.getElementById('menuGrid');
+    const tabs = document.querySelectorAll('.tab');
+
+    function money(x){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'XOF'}).format(x)}
+
+    function render(cat='plats'){
+      grid.innerHTML = '';
+      MENU[cat].forEach(d=>{
+        const el = document.createElement('article');
+        el.className='card dish';
+        el.innerHTML = `
+          <header>
+            <div>
+              <h3>${d.name}</h3>
+              <span class="tag">${d.tag}</span>
+            </div>
+            <div class="price">${money(d.price)}</div>
+          </header>
+          <p>${d.desc}</p>
+        `;
+        grid.appendChild(el);
+      });
+    }
+
+    tabs.forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        tabs.forEach(b=>b.setAttribute('aria-selected','false'));
+        btn.setAttribute('aria-selected','true');
+        render(btn.dataset.cat);
+      });
+    });
+
+    // Burger menu
+    const burger = document.getElementById('burger');
+    const mobile = document.getElementById('mobile');
+    burger.addEventListener('click',()=>{
+      const open = mobile.style.display === 'block';
+      mobile.style.display = open ? 'none' : 'block';
+      burger.setAttribute('aria-expanded', String(!open));
+    });
+    mobile.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{mobile.style.display='none';burger.setAttribute('aria-expanded','false')}));
+
+    // Réservation (simulation)
+    document.getElementById('booking').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const fd = new FormData(e.currentTarget);
+      const required = ['date','time','guests','name','phone'];
+      for(const k of required){ if(!fd.get(k)){ alert('Merci de compléter tous les champs obligatoires.'); return; } }
+      const recap = `Réservation demandée pour ${fd.get('guests')} pers. le ${fd.get('date')} à ${fd.get('time')}\nNom: ${fd.get('name')}\nTel: ${fd.get('phone')}\nNotes: ${fd.get('notes')||'-'}`;
+      alert(recap);
+      e.currentTarget.reset();
+    });
+
+    // Année dynamique
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Rendu initial
+    render('plats');
+  </script>
+</body>
+</html>
